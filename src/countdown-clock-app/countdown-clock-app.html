@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../custom_components/countdown-form/countdown-form.html">
+<link rel="import" href="../../custom_components/countdown-clock/countdown-clock.html">
+
+<link rel="import" href="../styles/shared-styles.html">
+
+<dom-module id="countdown-clock-app">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+    <countdown-form></countdown-form>
+    <div id="clock-container"></div>    
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class CountdownClockApp extends Polymer.Element {
+      static get is() { return 'countdown-clock-app'; }
+      static get properties() {
+        return {
+
+        };
+      }
+      ready() {
+        super.ready();
+        this.addEventListener('sendForm', this._sendForm);
+        this.addEventListener('deleteItem', this._deleteItem);
+      }
+
+      _sendForm(e) {
+        const countdownClock = document.createElement("countdown-clock");
+        const label = document.createAttribute("label");
+        const seconds = document.createAttribute("seconds");
+        label.value = e.detail.textLabel;
+        seconds.value = e.detail.seconds;
+        countdownClock.setAttributeNode(label);
+        countdownClock.setAttributeNode(seconds);
+        this.$['clock-container'].appendChild(countdownClock);
+        countdownClock.start();
+      }
+
+      _deleteItem(e) {
+        e.detail.countdownContainer.remove();
+      }
+    }
+
+    window.customElements.define(CountdownClockApp.is, CountdownClockApp);
+  </script>
+</dom-module>

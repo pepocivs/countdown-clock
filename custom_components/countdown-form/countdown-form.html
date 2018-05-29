@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../../src/styles/shared-styles.html">
+
+<dom-module id="countdown-form">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    
+      .container {
+        display: flex;
+        justify-content: space-around;
+      }
+    
+      .headerElement {
+        flex-grow: 0.3;
+      }
+    
+      paper-button {
+        background-color: #ff6600;
+        color: #ffffff;
+        font-weight: bold;
+      }
+    </style>
+    <div class="container">
+      <paper-input
+        id="textLabel"
+        name="textLabel"
+        class="headerElement"
+        value="{{textLabel}}"
+        label="Text label">
+      </paper-input>
+      <paper-input
+        id="seconds"
+        name="seconds"
+        class="headerElement"
+        value="{{seconds}}"
+        type="number"
+        label="Seconds">
+      </paper-input>
+      <paper-button 
+        id="buttonSubmit"
+        on-tap="sendForm"
+        class="headerElement">
+      Create
+      </paper-button>
+    </div>
+  </template>
+
+  <script>
+    class countdownForm extends (class extends Polymer.Element { }) {
+      static get is() { return 'countdown-form'; }
+
+      static get properties() {
+        return {
+          textLabel: {
+            type: String
+          },
+          seconds: {
+            type: String
+          }
+        };
+      }
+      sendForm() {
+        const textLabel = this.textLabel;
+        const seconds = this.seconds;
+        const sendFormEvent = new CustomEvent('sendForm', {
+          detail: { textLabel, seconds },
+          bubbles: true,
+          composed: true
+        });
+        this.dispatchEvent(sendFormEvent);
+      }
+    }
+
+    window.customElements.define(countdownForm.is, countdownForm);
+  </script>
+</dom-module>

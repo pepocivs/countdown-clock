@@ -1,0 +1,169 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../src/styles/shared-styles.html">
+
+<dom-module id="countdown-clock">
+  <template>
+    <style include="shared-styles">
+      #countdownClock-container {
+        padding: 5px;
+        width: 200px;
+        margin-top: 10px;
+        
+        @apply --countdown-clock-props;
+      }
+
+      .clock {
+        font-weight: bold;
+        font-size: 3em;
+        text-align: center;
+      }
+
+      .active {
+        background: MediumSeaGreen;
+        color: white;
+        @apply --countdown-clock-props-active;
+      }
+
+      .paused {
+        background: SkyBlue;
+        color: black;
+        @apply --countdown-clock-props-paused;
+      }
+
+      .finished {
+        background: tomato;
+        color: white;
+        @apply --countdown-clock-props-finished;
+      }
+    </style>
+    <div id="countdownClock-container" class$="[[status]]">
+      <label>[[label]]</label>
+      <div class="clock">[[_formattedTime]]</div>
+      <div class="buttons">
+        <button id="pauseStartBtn" on-click="pauseStart">Pausar</button>     
+        <button id="deleteBtn" on-click="deleteButton">Eliminar</button>
+      </div>
+    </div>
+  </template>
+  <script>
+    /**
+      * `<countdown-clock>` regressive counterback starting with provided time in seconds.
+      *
+      * ## Usage
+      * Just inject the `<countdown-clock>` component with and *id* to provide
+      *  easy access to its public functions and expose a variable of type `Number`
+      *
+      * ```
+      * <countdown-clock
+      *   id="countdownClock"
+      *   seconds="[[seconds]]"
+      *   label="[[label]]">
+      * </countdown-clock>
+      * ```
+      *
+      * ## Styling
+      *
+      * | Custom property                    | Description                                                       | Default |
+      * |------------------------------------|-------------------------------------------------------------------|---------|
+      * | `--countdown-clock-props`          | Mixin applied to time displayed (color, font type, etc).          | {}      |
+      * | `--countdown-clock-props-active`   | Mixin applied to time active displayed (color, font type, etc).   | {}      |
+      * | `--countdown-clock-props-paused`   | Mixin applied to time paused displayed (color, font type, etc).   | {}      |
+      * | `--countdown-clock-props-finished` | Mixin applied to time finished displayed (color, font type, etc). | {}      |
+      *
+      * @customElement
+      * @polymer
+    */
+    class countdownClock extends (class extends Polymer.Element { }) {
+      static get is() { return 'countdown-clock'; }
+
+      static get properties() {
+        return {
+          /** Formatted time to show */
+          _formattedTime: {
+            type: String,
+            computed: '_formatTime(seconds)'
+          },
+          /** Status of the box */
+          status: {
+            type: String,
+            value: 'active'
+          },
+          /** Received started seconds */
+          seconds: {
+            type: Number,
+            notify: true
+          },
+          /** Received text label */
+          label: {
+            type: String
+          }
+        };
+      }
+
+      /* DOM Helper to know the status */
+      isStatus(status) {
+        return !!(this.status === status);
+      }
+
+      /** Starts timer */
+      start() {
+        this.timeInterval = setInterval(() => { this._updateTime(); }, 1000);
+        this.status = 'active';
+      }
+
+      /** Pauses timer */
+      pause() {
+        clearInterval(this.timeInterval);
+        this.status = 'paused';
+      }
+
+      pauseStart(e) {
+        if (this.status === 'paused') {
+          e.target.textContent = 'Pausar';
+          this.start();
+        } else if (this.status === 'active') {
+          e.target.textContent = 'Reanudar';
+          this.pause();
+        }
+      }
+      
+      /** Button action delete */
+      deleteButton() {
+        const deleteItem = new CustomEvent('deleteItem', {
+          detail: { countdownContainer: this },
+          bubbles: true,
+          composed: true
+        });
+        this.dispatchEvent(deleteItem);
+      }
+
+      /** Callback that substracts one second to *seconds*. */
+      _updateTime() {
+        if (this.seconds === 1) {
+          this.set('seconds', this.seconds - 1);          
+          this.status = 'finished';
+          this.$.pauseStartBtn.remove();
+          clearInterval(this.timeInterval);
+        } else {
+          this.set('seconds', this.seconds - 1);
+        }
+      }
+
+      /**
+        * Gives *seconds* a certain format.
+        * @return {result} The seconds passed in a clock-like format (*HH:mm:ss*).
+      */
+      _formatTime() {
+        if (!this.seconds) {
+          this.seconds = 0;
+        }
+        const date = new Date(null);
+        date.setSeconds(this.seconds);
+        return date.toISOString().substr(11, 8);
+      }
+
+    }
+
+    window.customElements.define(countdownClock.is, countdownClock);
+  </script>
+</dom-module>

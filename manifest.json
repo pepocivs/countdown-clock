@@ -1,0 +1,7 @@
+{
+  "name": "countdown-clock",
+  "short_name": "countdown-clock",
+  "description": "A polymer app for learning",
+  "start_url": "/",
+  "display": "standalone"
+}
