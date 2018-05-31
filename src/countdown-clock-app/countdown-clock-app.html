@@ -36,12 +36,8 @@
 
       _sendForm(e) {
         const countdownClock = document.createElement("countdown-clock");
-        const label = document.createAttribute("label");
-        const seconds = document.createAttribute("seconds");
-        label.value = e.detail.textLabel;
-        seconds.value = e.detail.seconds;
-        countdownClock.setAttributeNode(label);
-        countdownClock.setAttributeNode(seconds);
+        countdownClock.setAttribute('label', e.detail.textLabel);
+        countdownClock.setAttribute('seconds', e.detail.seconds);
         this.$['clock-container'].appendChild(countdownClock);
         countdownClock.start();
       }
