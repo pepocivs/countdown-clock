@@ -6,7 +6,7 @@
     <style include="shared-styles">
       #countdownClock-container {
         padding: 5px;
-        width: 200px;
+        width: 220px;
         margin-top: 10px;
         
         @apply --countdown-clock-props;
@@ -16,6 +16,12 @@
         font-weight: bold;
         font-size: 3em;
         text-align: center;
+      }
+
+      .buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
       }
 
       .active {
@@ -40,8 +46,8 @@
       <label>[[label]]</label>
       <div class="clock">[[_formattedTime]]</div>
       <div class="buttons">
-        <button id="pauseStartBtn" on-click="pauseStart">Pausar</button>     
-        <button id="deleteBtn" on-click="deleteButton">Eliminar</button>
+        <paper-button id="pauseStartBtn" on-click="pauseStart">Pausar</paper-button>     
+        <paper-button id="deleteBtn" on-click="deleteButton">Eliminar</paper-button>
       </div>
     </div>
   </template>
