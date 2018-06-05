@@ -28,8 +28,8 @@
 
         };
       }
-      ready() {
-        super.ready();
+      connectedCallback() {
+        super.connectedCallback();
         this.addEventListener('sendForm', this._sendForm);
         this.addEventListener('deleteItem', this._deleteItem);
       }
